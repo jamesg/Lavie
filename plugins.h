@@ -10,6 +10,7 @@
 #include "plugins/countPlugin.h"
 #include "plugins/becomePlugin.h"
 #include "plugins/quizPlugin.h"
+#include "plugins/morningtonCrescentPlugin.h"
 #include "plugins/ircExtraPlugin.h"
 #include "plugins/aliasPlugin.h"
 
@@ -28,6 +29,7 @@ class plugins
 			pluginList.push_back(new countPlugin);
 			pluginList.push_back(new becomePlugin);
 			pluginList.push_back(new quizPlugin);
+			pluginList.push_back(new morningtonCrescentPlugin);
 			pluginList.push_back(new ircExtraPlugin);
 			//alias plugin should go last to stop other commands being realiased.
 			pluginList.push_back(new aliasPlugin);
