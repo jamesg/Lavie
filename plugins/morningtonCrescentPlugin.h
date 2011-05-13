@@ -234,11 +234,11 @@ class morningtonCrescentPlugin:public plugin
 					return 1;
 				}
 			}
-/*			else if(words.at(0) == "stopgame")
+			else if(words.at(0) == "stopgame")
 			{
 				gameRunning = false;
-				ircNet.sendMsg(channel, reply + "Stopping game.");
-			}*/
+				ircNet.sendMsg(channel, nick + "Stopping game.");
+			}
 			return 0;
 		}
 
