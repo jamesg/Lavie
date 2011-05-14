@@ -11,6 +11,7 @@
 #include "http.h"
 #include "stringUtils.h"
 #include "plugins.h"
+#include "stringhashtable.h"
 
 using std::ifstream;
 using std::ios_base;
@@ -21,10 +22,17 @@ int handleAllMessages(string nick, string channel, vector<string> words);
 int handleAllStartupOptions(vector<string> args);
 
 irc ircNet;
-plugins pluginList;
+//plugins pluginList;
+stringhashtable< pluginCommandHandler > commandTable;
+
+int testCommand(string nick, string channel, vector<string> messages) {
+	ircNet.sendMsg(channel, nick + ": This is the test command.");
+	return 1;
+}
 
 int main(int argc, char *argv[])
 {
+	commandTable.add("test", &testCommand);
 	srand(time(NULL));
 	vector<string> args(argv, argv + argc);
 	if(args.size() <3)
@@ -40,7 +48,7 @@ int main(int argc, char *argv[])
 	string message;
 	while(true)
 	{
-		pluginList.doTick();
+//		pluginList.doTick();
 		if(ircNet.checkMessages(message))
 		{
 			if(message.find("PRIVMSG",0) != string::npos)
@@ -60,18 +68,22 @@ int main(int argc, char *argv[])
 
 int handleAllCommands(string nick, string channel, vector<string> words)
 {
-	pluginList.handleCommand(nick, channel, words);
+//	pluginList.handleCommand(nick, channel, words);
+	cerr << "Command: " << words[0] << endl;
+	if (commandTable.contains(words[0])) {
+		return commandTable.get(words[0])(nick, channel, words);
+	}
 	return 0;
 }
 
 int handleAllMessages(string nick, string channel, vector<string> words)
 {
-	pluginList.handleMessage(nick, channel, words);
+//	pluginList.handleMessage(nick, channel, words);
 	return 0;
 }
 
 int handleAllStartupOptions(vector<string> args)
 {
-	pluginList.startupOptions(args);
+//	pluginList.startupOptions(args);
 	return 0;
 }
