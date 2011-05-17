@@ -1,5 +1,8 @@
 #ifndef PLUGINS_H
 #define PLUGINS_H
+#include <vector>
+#include <string>
+
 #include "plugin.h"
 
 #include "plugins/filePlugin.h"
@@ -14,26 +17,30 @@
 #include "plugins/ircExtraPlugin.h"
 #include "plugins/aliasPlugin.h"
 
-class plugins
+#include "stringhashtable.h"
+
+class channel
 {
 	private:
-		vector<plugin*> pluginList;
+		vector< plugin* > plugins;
+		stringhashtable< plugin* > commandTable;
 	public:
-		plugins()
+		channel()
 		{
-			pluginList.push_back(new filePlugin);
-			pluginList.push_back(new replyPlugin);
-			pluginList.push_back(new timePlugin);
-			pluginList.push_back(new inPlugin);
-			pluginList.push_back(new flipPlugin);
-			pluginList.push_back(new countPlugin);
-			pluginList.push_back(new becomePlugin);
-			pluginList.push_back(new quizPlugin);
-			pluginList.push_back(new morningtonCrescentPlugin);
-			pluginList.push_back(new ircExtraPlugin);
+			// include only per-channel plugins here
+			plugins.push_back(new replyPlugin);
+			plugins.push_back(new timePlugin);
+			plugins.push_back(new flipPlugin);
+			plugins.push_back(new countPlugin);
+			plugins.push_back(new quizPlugin);
+			plugins.push_back(new morningtonCrescentPlugin);
+			plugins.push_back(new ircExtraPlugin);
 			//alias plugin should go last to stop other commands being realiased.
-			pluginList.push_back(new aliasPlugin);
+			//new hashtable breaks this.
+			plugins.push_back(new aliasPlugin);
+			
 		}
+		void addPlugin(plugin* p);
 		//handle commads for all plugins, returns 0 on not matched, 1 on matched
 		int handleCommand(string nick, string channel, vector<string> words);
 		//handle messages for all plugins, returns 0 on not matched, 1 on matched

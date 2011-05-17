@@ -12,6 +12,7 @@ class plugin
 {
 	private:
 	public:
+		//bool perChannel;
 		//handle a command, return 0 for unmatched, 1 for matched and continue, 2 for matched and stop
 		virtual int handleCommand(string nick, string channel, vector<string> words)
 		{
@@ -31,7 +32,12 @@ class plugin
 		//return 0 for unmatched, 1 for matched
 		virtual int startupOptions(vector<string> args)
 		{
+			cout << "FAIL FAIL FAIL FAIL FAIL" << endl;
 			return 0;
+		}
+		virtual vector< string > commandList()
+		{
+			return vector< string >();
 		}
 };
 

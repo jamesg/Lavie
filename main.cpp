@@ -10,7 +10,9 @@
 #include "irc.h"
 #include "http.h"
 #include "stringUtils.h"
-#include "plugins.h"
+#include "plugin.h"
+#include "channel.h"
+#include "stringhashtable.h"
 
 using std::ifstream;
 using std::ios_base;
@@ -21,7 +23,16 @@ int handleAllMessages(string nick, string channel, vector<string> words);
 int handleAllStartupOptions(vector<string> args);
 
 irc ircNet;
-plugins pluginList;
+
+channel globalPlugins;
+vector< channel* > channels;
+stringhashtable< channel* > channelTable;
+
+bool registerChannel(string n, channel* c) {
+	channels.push_back(c);
+	return channelTable.insert(n, c);
+	return false;
+}
 
 int main(int argc, char *argv[])
 {
@@ -35,12 +46,30 @@ int main(int argc, char *argv[])
 	ircNet.setNick(BOT_NICK);
 	ircNet.setDesc(BOT_DESC);
 	ircNet.joinChannel(INITIAL_CHAN);
+
+
+	// set up global plugins
+	globalPlugins.addPlugin(new replyPlugin);
+	globalPlugins.addPlugin(new timePlugin);
+	globalPlugins.addPlugin(new flipPlugin);
+	globalPlugins.addPlugin(new countPlugin);
+	globalPlugins.addPlugin(new ircExtraPlugin);
+	//alias plugin should go last to stop other commands being realiased.
+	globalPlugins.addPlugin(new aliasPlugin);
+
 	handleAllStartupOptions(args);
 	ircNet.connect(argv[1], argv[2]);
 	string message;
 	while(true)
 	{
-		pluginList.doTick();
+		// do tick
+		vector< channel* >::iterator ii;
+		for (ii = channels.begin(); ii != channels.end(); ii++) {
+			(*ii)->doTick();
+		}
+		globalPlugins.doTick();
+
+
 		if(ircNet.checkMessages(message))
 		{
 			if(message.find("PRIVMSG",0) != string::npos)
@@ -58,20 +87,30 @@ int main(int argc, char *argv[])
 	return 0;
 }
 
-int handleAllCommands(string nick, string channel, vector<string> words)
+int handleAllCommands(string nick, string channelName, vector<string> words)
 {
-	pluginList.handleCommand(nick, channel, words);
-	return 0;
+	// per-channel plugins
+	if (!channelTable.contains(channelName)) {
+		channel* c;
+		c = new channel();
+		channels.push_back(c);
+		channelTable.insert(channelName, c);
+	}
+
+	if (channelTable.get(channelName)->handleCommand(nick, channelName, words) > 0) return 1;
+	
+	// global plugins
+	return globalPlugins.handleCommand(nick, channelName, words);
 }
 
 int handleAllMessages(string nick, string channel, vector<string> words)
 {
-	pluginList.handleMessage(nick, channel, words);
+	// or not (for now).
 	return 0;
 }
 
 int handleAllStartupOptions(vector<string> args)
 {
-	pluginList.startupOptions(args);
+	globalPlugins.startupOptions(args);
 	return 0;
 }
