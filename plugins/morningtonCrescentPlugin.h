@@ -259,13 +259,6 @@ class morningtonCrescentPlugin:public plugin
 
 		int startupOptions(vector<string> args)
 		{
-			for(int i=0; i<args.size(); ++i)
-			{
-				if(args.at(i) == "--loadstations" && args.size() > i)
-				{
-					cout << loadStations() << endl;
-				}
-			}
 			return 0;
 		}
 };

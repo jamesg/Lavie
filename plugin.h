@@ -32,12 +32,7 @@ class plugin
 		//return 0 for unmatched, 1 for matched
 		virtual int startupOptions(vector<string> args)
 		{
-			cout << "FAIL FAIL FAIL FAIL FAIL" << endl;
 			return 0;
-		}
-		virtual vector< string > commandList()
-		{
-			return vector< string >();
 		}
 };
 
