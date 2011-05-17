@@ -1,11 +1,15 @@
+#ifndef STRINGHASHTABLE_H
+#define STRINGHASHTABLE_H
 #include <vector>
+#include <string>
 
-#define COMMAND_TABLE_SIZE 256
+#define TABLE_SIZE 256
 
 template<class T>
 class stringhashtable {
 	private:
-		vector< pair<string, T> > buckets[COMMAND_TABLE_SIZE];
+		vector< pair<string, T> > buckets[TABLE_SIZE];
+		int size;
 
 		int hash(string s) {
 			int h = 0;
@@ -21,9 +25,9 @@ class stringhashtable {
 			return h;
 		}
 	public:
-		bool add(string key, T value) {
+		bool insert(string key, T value) {
 			if (!contains(key)) {
-				buckets[hash(key)&(COMMAND_TABLE_SIZE-1)].push_back(pair<string, T>(key,value));
+				buckets[hash(key)&(TABLE_SIZE-1)].push_back(pair<string, T>(key,value));
 				return true;
 			} else {
 				return false;
@@ -31,11 +35,11 @@ class stringhashtable {
 		}
 
 		bool remove(string key) {
-			int h = hash(key)&(COMMAND_TABLE_SIZE-1);
+			int h = hash(key)&(TABLE_SIZE-1);
 			typename vector< pair<string, T> >::iterator i;
 			for (i = buckets[h].begin(); i != buckets[h].end(); i++) {
 				if (i->first == key) {
-					buckets.remove(i);
+					buckets[h].erase(i);
 					return true;
 				}
 			}
@@ -43,16 +47,18 @@ class stringhashtable {
 		}
 
 		bool contains(string key) {
-			int h = hash(key)&(COMMAND_TABLE_SIZE-1);
 			typename vector< pair<string, T> >::iterator i;
+			int h = hash(key)&(TABLE_SIZE-1);
 			for (i = buckets[h].begin(); i != buckets[h].end(); i++) {
-				if (i->first == key) return true;
+				if (i->first == key) {
+					return true;
+				}
 			}
 			return false;
 		}
 
 		T get(string key) {
-			int h = hash(key)&(COMMAND_TABLE_SIZE-1);
+			int h = hash(key)&(TABLE_SIZE-1);
 			typename vector< pair<string, T> >::iterator i;
 			for (i = buckets[h].begin(); i != buckets[h].end(); i++) {
 				if (i->first == key) return i->second;
@@ -61,3 +67,4 @@ class stringhashtable {
 		}
 };
 
+#endif
