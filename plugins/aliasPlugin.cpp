@@ -1,3 +1,4 @@
 #include "aliasPlugin.h"
+#include "../stringhashtable.h"
 
-vector<alias> aliasPlugin::aliases;
+stringhashtable< vector< string > > aliasPlugin::aliases;
