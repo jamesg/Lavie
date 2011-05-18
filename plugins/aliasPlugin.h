@@ -2,19 +2,14 @@
 #define ALIASPLUGIN_H
 
 #include "../plugin.h"
+#include "../stringhashtable.h"
 
 using namespace std;
-
-struct alias
-{
-	string word;
-	vector<string> command;
-};
 
 class aliasPlugin:public plugin
 {
 	private:
-		static vector<alias> aliases;
+		static stringhashtable< vector< string > > aliases;
 	public:
 		int handleCommand(string nick, string channel, vector<string> words)
 		{
@@ -68,7 +63,7 @@ class aliasPlugin:public plugin
 					string result = showAlias(words.at(1));
 					if(result != "")
 					{
-					ircNet.sendMsg(channel, reply + "'" + words.at(1) + "' is aliased to '" + showAlias(words.at(1)) + "'.");
+						ircNet.sendMsg(channel, reply + "'" + words.at(1) + "' is aliased to '" + showAlias(words.at(1)) + "'.");
 					}
 					else
 					{
@@ -76,52 +71,35 @@ class aliasPlugin:public plugin
 					}
 				}
 			}
-			else
-			{
-				for(int i=0; i<aliases.size(); ++i)
-				{
-					if(words.at(0) == aliases.at(i).word)
-					{
-						handleAllCommands(nick, channel, aliases.at(i).command);
-						break;
-					}
-				}
+			else if (aliases.contains(words[0])) {
+				handleAllCommands(nick, channel, aliases.get(words[0]));
+				return 1;
 			}
 			return 0;
 		}
 
 		static bool addAlias(string aliasName, vector<string> command)
 		{
-			alias result;
-			result.word = aliasName;
-			result.command = command;
-			aliases.push_back(result);
-			return true;
+			if (!aliases.contains(aliasName)) {
+				aliases.insert(aliasName, command);
+				return true;
+			} else return false;
 		}
 
 		static bool deleteAlias(string aliasName)
 		{
-			for(int i=0; i<aliases.size(); ++i)
-			{
-				if(aliases.at(i).word == aliasName)
-				{
-					aliases.erase(aliases.begin()+i);
-					return true;
-				}
-			}
-			return false;
+			if (aliases.contains(aliasName)) {
+				aliases.remove(aliasName);
+				return true;
+			} else return false;
 		}
 
 		static string showAlias(string aliasName)
 		{
-			for(int i=0; i<aliases.size(); ++i)
-			{
-				if(aliases.at(i).word == aliasName)
-				{
-					return stringUtils::joinWords(aliases.at(i).command);
-				}
-			}
-			return "";
+			if (aliases.contains(aliasName)) 
+				return stringUtils::joinWords(aliases.get(aliasName));
+			else
+				return "";
 		}
 };
 
