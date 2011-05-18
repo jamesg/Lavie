@@ -28,11 +28,15 @@ class morningtonCrescentPlugin:public plugin
 {
 	private:
 		static vector<station> stations;
-		static vector<string> rules;
-		static list<player> players;
-		static list<player>::iterator currentPlayer;
-		static bool gameRunning;
+		vector<string> rules;
+		list<player> players;
+		list<player>::iterator currentPlayer;
+		bool gameRunning;
 	public:
+		morningtonCrescentPlugin() {
+			gameRunning = false;
+		}
+
 		int countVowels(string s) {
 			s = stringUtils::toLower(s);
 			int c = 0;

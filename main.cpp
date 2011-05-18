@@ -49,13 +49,13 @@ int main(int argc, char *argv[])
 
 
 	// set up global plugins
-	globalPlugins.addPlugin(new replyPlugin);
-	globalPlugins.addPlugin(new timePlugin);
-	globalPlugins.addPlugin(new flipPlugin);
-	globalPlugins.addPlugin(new countPlugin);
-	globalPlugins.addPlugin(new ircExtraPlugin);
+	globalPlugins.addPlugin(new replyPlugin());
+	globalPlugins.addPlugin(new timePlugin());
+	globalPlugins.addPlugin(new flipPlugin());
+	globalPlugins.addPlugin(new countPlugin());
+	globalPlugins.addPlugin(new ircExtraPlugin());
 	//alias plugin should go last to stop other commands being realiased.
-	globalPlugins.addPlugin(new aliasPlugin);
+	globalPlugins.addPlugin(new aliasPlugin());
 
 	handleAllStartupOptions(args);
 	ircNet.connect(argv[1], argv[2]);

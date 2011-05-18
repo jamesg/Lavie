@@ -28,16 +28,16 @@ class channel
 		channel()
 		{
 			// include only per-channel plugins here
-			plugins.push_back(new replyPlugin);
-			plugins.push_back(new timePlugin);
-			plugins.push_back(new flipPlugin);
-			plugins.push_back(new countPlugin);
-			plugins.push_back(new quizPlugin);
-			plugins.push_back(new morningtonCrescentPlugin);
-			plugins.push_back(new ircExtraPlugin);
+			plugins.push_back(new replyPlugin());
+			plugins.push_back(new timePlugin());
+			plugins.push_back(new flipPlugin());
+			plugins.push_back(new countPlugin());
+			plugins.push_back(new quizPlugin());
+			plugins.push_back(new morningtonCrescentPlugin());
+			plugins.push_back(new ircExtraPlugin());
 			//alias plugin should go last to stop other commands being realiased.
 			//new hashtable breaks this.
-			plugins.push_back(new aliasPlugin);
+			plugins.push_back(new aliasPlugin());
 			
 		}
 		void addPlugin(plugin* p);
