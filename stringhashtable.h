@@ -1,5 +1,8 @@
 #ifndef STRINGHASHTABLE_H
 #define STRINGHASHTABLE_H
+
+using namespace std;
+
 #include <vector>
 #include <string>
 
